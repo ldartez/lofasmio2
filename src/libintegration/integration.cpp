@@ -11,6 +11,7 @@
 /*
   lofasm::SubIntegration definitions
 */
+using namespace std;
 using namespace lofasm;
 
 lofasm::SubIntegration::SubIntegration(double fstart,
@@ -44,9 +45,11 @@ lofasm::LofasmSubintBurst::LofasmSubintBurst(const char* inbuf){
     interrupt = (unsigned int) NULL;
     rawdata = inbuf;
 
-    if (!validate()){
-        return;
-    }
+    //if (!validate()){
+    //    return;
+    //}
+
+    validate();
 
     // set signature and burst id
     id = binary_to_uint(rawdata+3, 3);
@@ -58,34 +61,40 @@ bool lofasm::LofasmSubintBurst::validate(){
       valid input buffer by ensuring that the burst signature
       _only_ shows up in the header packet.
     */
+    valid = true; // assume all is good at first
+    const char* data = this->rawdata;
 
     // check the top of the header packet
-    unsigned int testVal = binary_to_uint(rawdata, 3);
+    unsigned int testVal = binary_to_uint(data, 3);
     if (testVal != BURST_KEY){
         valid = false;
-        interrupt = 0; // burst was invalidated at beginning
-        return valid;
     }
 
     /*
       Check the top of the remaining data packets.
       If one of the "data packets" turns out to contain the
-      Burst Key, then the current packet is corrupted or incomplete.
+      Burst Key, then the current packet is corrupted by interruption.
 
       Set interrupt to location of interruption. This will be the number
       of bytes since the beginning of the buffer.
     */
-    const char* buf = rawdata; // make a copy of the pointer
+
     for (int i=1; i<17; ++i){
-        buf += PACKET_SIZE;
-        testVal = binary_to_uint(buf, 3);
+        data += PACKET_SIZE;
+        testVal = binary_to_uint(data, 3);
         if (testVal == BURST_KEY){
             valid = false;
             interrupt = i*PACKET_SIZE;
             return valid;
         }
     }
-    valid = true;
+
+    /*
+      if valid is still false here then BURST_KEY wasn't found at the top of
+      any of the packets in the burst buffer.
+      File is most likely corrupt.
+    */
+    interrupt = -1;
     return valid;
 }
 

@@ -28,7 +28,7 @@ int main(int argc, char** argv){
     }
     // create local bbx directory if it doesn't already exist.
     struct stat statbuf;
-    int statcode;
+    int statcode, burst_interrupt;
     string rootDir = "bbx/"; // relative to 'here'
     statcode = stat(rootDir.c_str(), &statbuf);
 
@@ -50,8 +50,8 @@ int main(int argc, char** argv){
         string inputfilename = argv[k];
         gzFile infile = gzopen(inputfilename.c_str(), "rb");
         if (infile == nullptr){
-            cerr << "Unable to open file." << endl;
-            return -1;
+            cerr << "Unable to open file " << inputfilename <<  endl;
+            continue;
         }
         char* buffer = (char *) malloc(lofasm::BURST_SIZE);
         gzread(infile, buffer, 128); // read header string
@@ -63,6 +63,7 @@ int main(int argc, char** argv){
         int nerr = 0;
 
         double dataread_start = get_time();
+        // read first burst into buffer
         gzread(infile, buffer,lofasm::BURST_SIZE);
         vector<vector<double>>* pv;
         double* pdata;
@@ -81,41 +82,58 @@ int main(int argc, char** argv){
             outFiles.push_back(of);
         }
 
+        cout << "Burst Key: " << lofasm::BURST_KEY << endl;
         pv = new vector<vector<double>>(10);
         while(!gzeof(infile)){
+            //for (int w=0; w<20; ++w){
+            //cout << "iteration " << w << endl;
             lofasm::LofasmSubintBurst burst(buffer);
             if (!burst.isValid()){
                 nerr++;
-                printf("Burst interrupted at %d\n", burst.getInterrupt());
-                // reset file location
-                gzseek(infile, -1*(gztell(infile)-burst.getInterrupt()), SEEK_CUR);
+                if (burst.getInterrupt() != -1){
+                    // move file location to start of valid burst header packet
+                    // and continue reading data at the new position
+                    int offset = (lofasm::PACKETS_PER_BURST - (burst.getInterrupt()/lofasm::PACKET_SIZE))*lofasm::PACKET_SIZE;
+                    cout << "Interrupted Burst Buffer: correcting file location from ";
+                    cout << gztell(infile) << " to " << gztell(infile)-offset << endl;
+                    gzseek(infile, -1*offset, SEEK_CUR);
+                    gzread(infile, buffer, lofasm::BURST_SIZE);
+                    continue;
+                }
+                else{
+                    /*
+                      interrupt = -1.
+                      no burst key was detected.
+                      file may be corrupted or pointer placement is wrong.
+                      skip the rest of this file.
+                    */
+                    cout << "File is corrupt " << inputfilename << " ...skipping\n";
+                    break; // out of while loop to skip the rest of the current file
+                }
             }
+            /*
+              burst is valid
+            */
+            //cout << "Valid burst at " << gztell(infile)-lofasm::BURST_SIZE << endl;
             v = *pv;
             burst.parse(v);
-            //            cout << "double size: " << sizeof(double) << endl;
-            for (int i=0; i<10; ++i){
-
-            }
-
 
             // write pols
             for (int i=0; i<v.size(); ++i){
                 pdata = v[i].data(); // get pointer to data array
-                //cout << lofasm::POLS[i] << " size: " << sizeof(double)*v[i].size() << endl;
                 gzwrite(outFiles[i], (char*) pdata, sizeof(double)*v[i].size());
             }
             gzread(infile, buffer, lofasm::BURST_SIZE);
         }
         delete pv;
+
         double dataread_end = get_time();
         printf("Number of interrupts: %d\n", nerr);
         printf("Read and parsed data in %f s.\n", dataread_end-dataread_start);
-
         // free buffers & close files
         free(buffer);
         for (int i=0; i<outFiles.size(); ++i) gzclose(outFiles[i]);
         gzclose(infile);
-
     }
 
     // print debug info
@@ -129,7 +147,8 @@ void writeHeaderBBX(gzFile of, lofasm::Lofasm_FHDR& hdr, int chanID){
     //
     string x, chanLabel;
     const char* pol = lofasm::POLS[chanID];
-    x = (string) "%" + to_string(0x02) + (string) "BX\n";
+    //x = (string) "%" + to_string(0x02) + (string) "BX\n";
+    x = "%\002BX\n";
     gzwrite(of, x.c_str(), x.length());
     x = "%hdr_type: LoFASM-filterbank\n";
     gzwrite(of, x.c_str(), x.length());

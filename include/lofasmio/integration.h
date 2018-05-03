@@ -46,7 +46,7 @@ namespace lofasm {
         unsigned int id; // subint burst id number
         unsigned int sig; // subint burst signature
         bool valid;
-        unsigned int interrupt; // location of interrupting burst
+        int interrupt; // location of interrupting burst. -1 if invalidated at 0
         // private methods
         bool validate();
         void parseSubintReal(std::vector<double>&, std::vector<double>&, const char*, const char*) const;
