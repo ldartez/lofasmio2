@@ -66,10 +66,10 @@ int main(int argc, char** argv){
         }
         char* buffer = (char *) malloc(lofasm::BURST_SIZE);
         gzread(infile, buffer, 128); // read header string
-        cout << "Reading " << inputfilename << endl;
+        cout << "Reading (" << k << "/" << argc-1 << ") " << inputfilename << endl;
 
         lofasm::Lofasm_FHDR hdr(buffer);
-        hdr.print();
+        //hdr.print();
         int nerr = 0;
         unsigned int N_contiguous = 0;
         unsigned int N_bursts = 0; // count total number of valid bursts
@@ -88,17 +88,7 @@ int main(int argc, char** argv){
         */
         vector<ofstream*> datFiles(10); // one for each polarization
         string ofname;
-        /*
-        for(int i=0; i<lofasm::POLS.size(); ++i){
-            ofname = rootDir + lofasm::POLS[i] + "/";
-            ofname += to_string(hdr.mjd) + "_" + lofasm::POLS[i];
-            // open dat files
-            ofstream dat_of((ofname + ".dat", ios::out | ios::binary));
-            datFiles.push_back(dat_of);
-        }
-        */
 
-        cout << "Burst Key: " << lofasm::BURST_KEY << endl;
         pv = new vector<vector<double>>(10);
         gzread(infile, buffer,lofasm::BURST_SIZE);  // read first burst into buffer.
         while(!gzeof(infile)){
@@ -159,10 +149,7 @@ int main(int argc, char** argv){
                     // open dat files
                     ofstream* dat_of = new ofstream;
                     dat_of->open(ofname + ".dat", ios::out | ios::binary);
-                    if (dat_of->is_open()){
-                        cout << "Successfully opened " << ofname+".dat" << endl;
-                    }
-                    else{
+                    if (!dat_of->is_open()){
                         cout << "Unable to open " << ofname+".dat" << endl;
                     }
                     datFiles[i] = dat_of;
@@ -175,8 +162,6 @@ int main(int argc, char** argv){
 
             // write pol data to dat files
             for (int i=0; i<v.size(); ++i){
-                //cout << "Writing " << lofasm::POLS[i] << " data: " << v[i].size();
-                //cout << " " << datFiles[i]->good() << endl;
                 pdata = v[i].data(); // get pointer to data array
                 datFiles[i]->write((char*) pdata, sizeof(double)*v[i].size());
             }
@@ -298,9 +283,6 @@ void dumpBlock(lofasm::Lofasm_FHDR& hdr, vector<ofstream*>& datFiles){
         if (remove((ofname+".dat").c_str())){
             cerr << "Unable to delete " << ofname+".dat" << endl;
             perror("");
-        }
-        else{
-            cout << "Cleaned up " << ofname+".dat" << endl;
         }
     }
     //    datFiles.clear();
