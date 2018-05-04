@@ -148,7 +148,7 @@ int main(int argc, char** argv){
                 }
                 // calculate start mjd of this block
                 int delta_id = burst.getId() - start_burst_id;
-                double new_mjd = start_mjd + (hdr.int_time*delta_id);
+                double new_mjd = start_mjd + (hdr.int_time*delta_id)/86400.0;
                 hdr.mjd = new_mjd;
                 newBlock = false; // reset newBlock trigger
                 N_contiguous = 0;
