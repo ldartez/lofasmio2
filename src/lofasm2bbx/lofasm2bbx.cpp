@@ -25,7 +25,7 @@ double get_time();
 void dumpBlock(lofasm::Lofasm_FHDR&, vector<ofstream*>&);
 
 int main(int argc, char** argv){
-    if (argc < 2){
+    if (argc < 2 || argc > 2){
         cout << "Usage: " << argv[0] << " filename";
         cout << endl;
         return 0;
@@ -47,11 +47,12 @@ int main(int argc, char** argv){
 
     // check if polarization directories exist and create them if they don't
     string dirName;
+    cout << "Creating bbx directories...\n";
     for (int i=0; i<lofasm::POLS.size(); ++i){
         dirName = lofasm::POLS[i];
         statcode = stat((rootDir+dirName).c_str(), &statbuf);
         if (statcode == -1){
-            cout << "Creating directory: " << rootDir+dirName << endl;
+            //cout << "Creating directory: " << rootDir+dirName << endl;
             mkdir((rootDir+dirName).c_str(), S_IRWXU | S_IRWXG | S_IRWXO);
         }
     }

@@ -123,13 +123,6 @@ void lofasm::LofasmSubintBurst::parse(std::vector<std::vector<double>>& poldata)
     //std::vector<std::vector<double>>* pols = new std::vector<std::vector<double>>(10);
 
     // parse autocorrelations
-    /*
-    parseSubintReal(&((*pols)[0]), &((*pols)[1]),
-                    buf+PACKET_SIZE, buf+9*PACKET_SIZE);
-
-    parseSubintReal(&((*pols)[2]), &((*pols)[3]),
-                    buf+2*PACKET_SIZE, buf+10*PACKET_SIZE);
-    */
     parseSubintReal(poldata[0], poldata[1],
                     rawdata+PACKET_SIZE, rawdata+9*PACKET_SIZE);
     parseSubintReal(poldata[2], poldata[3],

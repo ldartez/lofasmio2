@@ -39,7 +39,7 @@ int main(int argc, char** argv){
 
     lofasm::Lofasm_FHDR hdr(buffer);
     hdr.print();
-    int n=0;
+    int n = 0;
     int nerr = 0;
 
     double dataread_start = get_time();
