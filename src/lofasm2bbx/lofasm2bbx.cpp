@@ -195,51 +195,30 @@ string createHeaderBBX(lofasm::Lofasm_FHDR& hdr, int chanID){
     string x, chanLabel;
     const char* pol = lofasm::POLS[chanID];
     x = "%\002BX\n"; // BBX signature "^BBX"
-    //gzwrite(of, x.c_str(), x.length());
     x += "%hdr_type: LoFASM-filterbank\n";
-    //gzwrite(of, x.c_str(), x.length());
     x += "%hdr_version: 1\n"; // THIS SHOULD BE CONFIGURABLE!
-    //gzwrite(of, x.c_str(), x.length());
     x += "%station: " + to_string(hdr.station_id) + "\n";
-    //gzwrite(of, x.c_str(), x.length());
     x += "%channel: " + (string) pol + "\n";
-    //gzwrite(of, x.c_str(), x.length());
     x += "%channel_label: " + hdr.get_channel_label(pol) + "\n";
-    //gzwrite(of, x.c_str(), x.length());
     x += "%start_mjd: " + to_string(hdr.mjd) + "\n";
-    //gzwrite(of, x.c_str(), x.length());
     x += "%time_offset_J2000: 0 (s)\n";
-    //gzwrite(of, x.c_str(), x.length());
     x += "%frequency_offset_DC: 0 (Hz)\n";
-    //gzwrite(of, x.c_str(), x.length());
     x += "%dim1_label: time (s)\n";
-    //gzwrite(of, x.c_str(), x.length());
     x += "%dim1_start: " + to_string(hdr.mjd - (2451545 - 2400000)) + "\n";
-    //gzwrite(of, x.c_str(), x.length());
     x += "%dim1_span: " + to_string(hdr.int_time*hdr.num_samples) + "\n";
-    //gzwrite(of, x.c_str(), x.length());
     x += "%dim2_label: frequency (Hz)\n";
-    //gzwrite(of, x.c_str(), x.length());
     x += "%dim2_start: " + to_string(hdr.fstart) + "\n";
-    //gzwrite(of, x.c_str(), x.length());
     x += "%dim2_span: " + to_string(hdr.fstep*hdr.num_freq) + "\n";
-    //gzwrite(of, x.c_str(), x.length());
     x += "%data_label: ";
     if (pol[0] == pol[1]) x += "power spectrum (arbitrary)\n";
     else x += "cross spectrum (arbitrary)\n";
-    //gzwrite(of, x.c_str(), x.length());
     x += "%data_offset: 0\n";
-    //gzwrite(of, x.c_str(), x.length());
     x += "%data_scale: 1\n";
-    //gzwrite(of, x.c_str(), x.length());
     x += "%data_type: real64\n";
-    //gzwrite(of, x.c_str(), x.length());
     x += to_string(hdr.num_samples) + " " + to_string(hdr.num_freq) + " ";
-    //gzwrite(of, x.c_str(), x.length());
     if (pol[0] == pol[1]) x += "1 ";
     else x += "2 ";
     x += "64 raw256\n";
-    //gzwrite(of, x.c_str(), x.length());
 
     return x;
 }
@@ -286,6 +265,5 @@ void dumpBlock(lofasm::Lofasm_FHDR& hdr, vector<ofstream*>& datFiles){
             perror("");
         }
     }
-    //    datFiles.clear();
     free(buffer);
 }
