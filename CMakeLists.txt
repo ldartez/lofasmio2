@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 set( CMAKE_CXX_FLAGS "-std=c++11")
-include_directories("include/")
-link_directories("lib/")
+set (CMAKE_EXPORT_COMPILE_COMMANDS ON)
+include_directories("include/" $ENV{work}/external/include)
+link_directories("lib/" $ENV{work}/external/lib)
 add_subdirectory(src)

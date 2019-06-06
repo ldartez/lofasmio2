@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0)
 project(readlofasm)
-add_executable(lofasm2bbx lofasm2bbx.cpp ../lofasmfileheader.cpp)
-target_link_libraries(lofasm2bbx lofasm z)
+add_executable(lofasm2bbx lofasm2bbx.cpp)
+target_link_libraries(lofasm2bbx lofasm z boost_date_time)
 install(TARGETS lofasm2bbx DESTINATION "$ENV{BIN_INSTALL_PATH}")

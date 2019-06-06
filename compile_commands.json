@@ -1,0 +1,37 @@
+[
+{
+  "directory": "/Users/louis/Documents/workspace/repos/lofasmio2/build/src",
+  "command": "/usr/local/bin/g++-8   -I/Users/louis/Documents/workspace/repos/lofasmio2/include -I/Users/louis/Documents/workspace/external/include  -std=c++11 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk   -o CMakeFiles/lofasm.dir/libintegration/integration.cpp.o -c /Users/louis/Documents/workspace/repos/lofasmio2/src/libintegration/integration.cpp",
+  "file": "/Users/louis/Documents/workspace/repos/lofasmio2/src/libintegration/integration.cpp"
+},
+{
+  "directory": "/Users/louis/Documents/workspace/repos/lofasmio2/build/src",
+  "command": "/usr/local/bin/g++-8   -I/Users/louis/Documents/workspace/repos/lofasmio2/include -I/Users/louis/Documents/workspace/external/include  -std=c++11 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk   -o CMakeFiles/lofasm.dir/libparseraw/parseraw.cpp.o -c /Users/louis/Documents/workspace/repos/lofasmio2/src/libparseraw/parseraw.cpp",
+  "file": "/Users/louis/Documents/workspace/repos/lofasmio2/src/libparseraw/parseraw.cpp"
+},
+{
+  "directory": "/Users/louis/Documents/workspace/repos/lofasmio2/build/src",
+  "command": "/usr/local/bin/g++-8   -I/Users/louis/Documents/workspace/repos/lofasmio2/include -I/Users/louis/Documents/workspace/external/include  -std=c++11 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk   -o CMakeFiles/lofasm.dir/liblofasmfileheader/lofasmfileheader.cpp.o -c /Users/louis/Documents/workspace/repos/lofasmio2/src/liblofasmfileheader/lofasmfileheader.cpp",
+  "file": "/Users/louis/Documents/workspace/repos/lofasmio2/src/liblofasmfileheader/lofasmfileheader.cpp"
+},
+{
+  "directory": "/Users/louis/Documents/workspace/repos/lofasmio2/build/src",
+  "command": "/usr/local/bin/g++-8   -I/Users/louis/Documents/workspace/repos/lofasmio2/include -I/Users/louis/Documents/workspace/external/include  -std=c++11 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk   -o CMakeFiles/lofasm.dir/libtime/time.cpp.o -c /Users/louis/Documents/workspace/repos/lofasmio2/src/libtime/time.cpp",
+  "file": "/Users/louis/Documents/workspace/repos/lofasmio2/src/libtime/time.cpp"
+},
+{
+  "directory": "/Users/louis/Documents/workspace/repos/lofasmio2/build/src",
+  "command": "/usr/local/bin/g++-8   -I/Users/louis/Documents/workspace/repos/lofasmio2/include -I/Users/louis/Documents/workspace/external/include  -std=c++11 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk   -o CMakeFiles/lofasm.dir/liblofasmreader/lofasmreader.cpp.o -c /Users/louis/Documents/workspace/repos/lofasmio2/src/liblofasmreader/lofasmreader.cpp",
+  "file": "/Users/louis/Documents/workspace/repos/lofasmio2/src/liblofasmreader/lofasmreader.cpp"
+},
+{
+  "directory": "/Users/louis/Documents/workspace/repos/lofasmio2/build/src/lofasm2bbx",
+  "command": "/usr/local/bin/g++-8   -I/Users/louis/Documents/workspace/repos/lofasmio2/include -I/Users/louis/Documents/workspace/external/include  -std=c++11 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk   -o CMakeFiles/lofasm2bbx.dir/lofasm2bbx.cpp.o -c /Users/louis/Documents/workspace/repos/lofasmio2/src/lofasm2bbx/lofasm2bbx.cpp",
+  "file": "/Users/louis/Documents/workspace/repos/lofasmio2/src/lofasm2bbx/lofasm2bbx.cpp"
+},
+{
+  "directory": "/Users/louis/Documents/workspace/repos/lofasmio2/build/src/readlofasm2",
+  "command": "/usr/local/bin/g++-8   -I/Users/louis/Documents/workspace/repos/lofasmio2/include -I/Users/louis/Documents/workspace/external/include  -std=c++11 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk   -o CMakeFiles/readlofasm2.dir/readlofasm.cpp.o -c /Users/louis/Documents/workspace/repos/lofasmio2/src/readlofasm2/readlofasm.cpp",
+  "file": "/Users/louis/Documents/workspace/repos/lofasmio2/src/readlofasm2/readlofasm.cpp"
+}
+]

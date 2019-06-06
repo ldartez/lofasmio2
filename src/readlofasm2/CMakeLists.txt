@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.0)
+project(readlofasm)
+add_executable(readlofasm2 readlofasm.cpp)
+target_link_libraries(readlofasm2 lofasm z)
+install(TARGETS readlofasm2 DESTINATION "$ENV{BIN_INSTALL_PATH}")

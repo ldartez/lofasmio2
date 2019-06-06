@@ -33,11 +33,13 @@ namespace lofasm {
 
     class LofasmSubintBurst{
     public:
+        LofasmSubintBurst();
         LofasmSubintBurst(const char*);
         unsigned int getId() const;
         unsigned int getSig() const;
         unsigned int getInterrupt() const;
         bool isValid() const;
+        void setInputBuffer(const char*);
         void parse(std::vector<std::vector<double>>&) const;
         ~LofasmSubintBurst();
     private:

@@ -40,22 +40,8 @@ lofasm::SubIntegration::~SubIntegration(){
 /*
   lofasm::LofasmSubintBurst definitions
 */
-lofasm::LofasmSubintBurst::LofasmSubintBurst(const char* inbuf){
-
-    interrupt = (unsigned int) NULL;
-    rawdata = inbuf;
-
-    //if (!validate()){
-    //    return;
-    //}
-
-    validate();
-
-    // set signature and burst id
-    id = binary_to_uint(rawdata+3, 3);
-    sig = binary_to_uint(rawdata+6,3);
-}
-
+lofasm::LofasmSubintBurst::LofasmSubintBurst(){};
+lofasm::LofasmSubintBurst::LofasmSubintBurst(const char* inbuf){setInputBuffer(inbuf);}
 bool lofasm::LofasmSubintBurst::validate(){
     /*
       valid input buffer by ensuring that the burst signature
@@ -97,18 +83,26 @@ bool lofasm::LofasmSubintBurst::validate(){
     interrupt = -1;
     return valid;
 }
+void lofasm::LofasmSubintBurst::setInputBuffer(const char* inbuf){
+    interrupt = (unsigned int) NULL;
+    rawdata = inbuf;
 
+    validate();
+
+    // set signature and burst id
+    id = binary_to_uint(rawdata+3, 3);
+    sig = binary_to_uint(rawdata+6,3);
+}
 unsigned int lofasm::LofasmSubintBurst::getId() const{return id;}
 unsigned int lofasm::LofasmSubintBurst::getSig() const{return sig;}
 unsigned int lofasm::LofasmSubintBurst::getInterrupt() const{return interrupt;}
 bool lofasm::LofasmSubintBurst::isValid() const{return valid;}
-
 void lofasm::LofasmSubintBurst::parse(std::vector<std::vector<double>>& poldata) const{
     /*
       Prepare array to hold all 10 polarizations.
       Each with 1024 frequency channels.
       The auto correlation arrays will have 1024 elements.
-      The cross correlcation arrays will have 2048 elements.
+      The cross correlation arrays will have 2048 elements.
 
       Order of polarizations:
       AA, BB, CC, DD, AB, AC, AD, BC, BD, CD
@@ -133,9 +127,7 @@ void lofasm::LofasmSubintBurst::parse(std::vector<std::vector<double>>& poldata)
         parseSubintComplex(poldata[i], rawdata+(i-1)*PACKET_SIZE,
                            rawdata+(i+7)*PACKET_SIZE);
     }
-
 }
-
 void lofasm::LofasmSubintBurst::parseSubintReal(std::vector<double>& X,
                                                 std::vector<double>& Y,
                                                 const char* ebuf,
@@ -165,5 +157,4 @@ void lofasm::LofasmSubintBurst::parseSubintComplex(std::vector<double>& X,
         obuf += 8;
     }
 }
-
 lofasm::LofasmSubintBurst::~LofasmSubintBurst(){}

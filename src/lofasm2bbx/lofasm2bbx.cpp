@@ -14,7 +14,12 @@
 #include <math.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <iomanip>
+#include "boost/date_time/posix_time/posix_time.hpp"
+#include "boost/date_time/gregorian/gregorian.hpp"
 using namespace std;
+namespace pt = boost::posix_time;
+namespace gd = boost::gregorian;
 
 // global vars
 string rootDir = "bbx/"; // relative to 'here'
@@ -23,6 +28,8 @@ string rootDir = "bbx/"; // relative to 'here'
 string createHeaderBBX(lofasm::Lofasm_FHDR&, int);
 double get_time();
 void dumpBlock(lofasm::Lofasm_FHDR&, vector<ofstream*>&);
+pt::ptime mjd2gregorian(double);
+string gregorian2string(pt::ptime);
 
 int main(int argc, char** argv){
     if (argc < 2 || argc > 2){
@@ -145,8 +152,9 @@ int main(int argc, char** argv){
                 N_contiguous = 0;
                 // open new set of files
                 for(int i=0; i<lofasm::POLS.size(); ++i){
+                    pt::ptime tstamp = mjd2gregorian(hdr.mjd);
                     ofname = rootDir + lofasm::POLS[i] + "/";
-                    ofname += to_string(hdr.mjd) + "_" + lofasm::POLS[i];
+                    ofname += gregorian2string(tstamp) + '_' + lofasm::POLS[i];
                     // open dat files
                     ofstream* dat_of = new ofstream;
                     dat_of->open(ofname + ".dat", ios::out | ios::binary);
@@ -170,7 +178,8 @@ int main(int argc, char** argv){
             gzread(infile, buffer, lofasm::BURST_SIZE);
         }
 
-        cout << "Wrapping up with " << N_contiguous << " integrations @ " << hdr.mjd << endl;
+        cout << "Wrapping up with " << N_contiguous << " integrations @ ";
+        cout << gregorian2string(mjd2gregorian(hdr.mjd)) << endl;
         hdr.num_samples = N_contiguous; // update hdr object with number of samples parsed
         dumpBlock(hdr, datFiles);
         delete pv;
@@ -204,7 +213,7 @@ string createHeaderBBX(lofasm::Lofasm_FHDR& hdr, int chanID){
     x += "%time_offset_J2000: 0 (s)\n";
     x += "%frequency_offset_DC: 0 (Hz)\n";
     x += "%dim1_label: time (s)\n";
-    x += "%dim1_start: " + to_string(hdr.mjd - (2451545 - 2400000)) + "\n";
+    x += "%dim1_start: " + to_string((hdr.mjd - (2451545 - 2400000.5))*86400) + "\n";
     x += "%dim1_span: " + to_string(hdr.int_time*hdr.num_samples) + "\n";
     x += "%dim2_label: frequency (Hz)\n";
     x += "%dim2_start: " + to_string(hdr.fstart) + "\n";
@@ -242,7 +251,8 @@ void dumpBlock(lofasm::Lofasm_FHDR& hdr, vector<ofstream*>& datFiles){
         delete datFiles[i]; // release ofstream pointer
         // generate fname
         ofname = rootDir + lofasm::POLS[i] + "/";
-        ofname += to_string(hdr.mjd) + "_" + lofasm::POLS[i];
+        ofname += gregorian2string(mjd2gregorian(hdr.mjd));
+        ofname += (string) "_" + lofasm::POLS[i];
         // write header string to BBX file
         h = createHeaderBBX(hdr, i);
         gzFile ofile = gzopen((ofname+".bbx.gz").c_str(), "wb");
@@ -267,3 +277,49 @@ void dumpBlock(lofasm::Lofasm_FHDR& hdr, vector<ofstream*>& datFiles){
     }
     free(buffer);
 }
+
+pt::ptime mjd2gregorian(double mjd){
+    /*
+     * calculate gregorian date from mjd value using formula from
+     * https://aa.usno.navy.mil/faq/docs/JD_Formula.php
+     * and the fact that 
+     * MJD = JD - 2400000.5
+     */
+    double JD = mjd + 2400000.5;
+    int jd, year, month, day, I, J, K, L, N;
+    L = ( (int) JD ) + 68569;
+    N = 4*L/146097;
+    L = L-(146097*N+3)/4;
+    I = 4000*(L+1)/1461001;
+    L = L-1461*I/4+31;
+    J = 80*L/2447;
+    K = L-2447*J/80;
+    L = J/11;
+    J = J+2-12*L;
+    I = 100*(N-49)+I+L;
+    year = I;
+    month = J;
+    day = K;
+    pt::ptime date(gd::date(year, month, day), pt::time_duration(12,0,0)); // integer jd starts at noon
+    // calculate time since noon 
+    double daypart = JD - (int) JD;
+    double daypart_us = daypart * 86400000000.0;
+    pt::time_duration delta = pt::microseconds((long) daypart_us);
+    date += delta;
+    return date;
+}
+string gregorian2string(pt::ptime t) {
+    gd::date date = t.date(); // date portion
+    auto ymd = date.year_month_day();
+    pt::time_duration tod = t.time_of_day();
+
+    stringstream ss;
+    ss << ymd.year << setw(2) << setfill('0') << (int) ymd.month;
+    ss << setw(2) << setfill('0') << ymd.day;
+    ss << '_';
+    ss << setw(2) << setfill('0') << tod.hours();
+    ss << setw(2) << setfill('0') << tod.minutes();
+    ss << setw(2) << setfill('0') << tod.seconds();
+    return ss.str();
+}
+
