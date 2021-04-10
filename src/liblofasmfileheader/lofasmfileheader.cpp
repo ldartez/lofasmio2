@@ -9,6 +9,10 @@
 using namespace std;
 using namespace lofasm;
 
+string ltrim(string s){
+    int nonZero_pos = s.find_first_not_of(' ');
+    return s.substr(nonZero_pos, s.size()-nonZero_pos);
+}
 Lofasm_FHDR::Lofasm_FHDR(char* buf) {load(buf);}
 Lofasm_FHDR::Lofasm_FHDR(){}
 
@@ -99,7 +103,6 @@ void Lofasm_FHDR::print() {
     cout << "Trunk Line C          : " << setw(w) << trunkC << endl;
     cout << "Trunk Line D          : " << setw(w) << trunkD << endl;
 }
-
 string Lofasm_FHDR::get_channel_label(const char* pol) const {
     /*
       convert polarization name (AA, BB, CD, etc.) to a channel label
@@ -108,20 +111,20 @@ string Lofasm_FHDR::get_channel_label(const char* pol) const {
     string chanLabel;
     if (pol[0] == pol[1]){
         if (pol[0] == 'A') chanLabel = trunkA;
-        else if (pol[0] == 'B') chanLabel = trunkB;
-        else if (pol[0] == 'C') chanLabel = trunkC;
-        else if (pol[0] == 'D') chanLabel = trunkD;
+        else if (pol[0] == 'B') chanLabel = ltrim(trunkB);
+        else if (pol[0] == 'C') chanLabel = ltrim(trunkC);
+        else if (pol[0] == 'D') chanLabel = ltrim(trunkD);
     }
     else{
-        if (pol[0] == 'A') chanLabel = trunkA;
-        else if (pol[0] == 'B') chanLabel = trunkB;
-        else if (pol[0] == 'C') chanLabel = trunkC;
-        else if (pol[0] == 'D') chanLabel = trunkD;
+        if (pol[0] == 'A') chanLabel = ltrim(trunkA);
+        else if (pol[0] == 'B') chanLabel = ltrim(trunkB);
+        else if (pol[0] == 'C') chanLabel = ltrim(trunkC);
+        else if (pol[0] == 'D') chanLabel = ltrim(trunkD);
         chanLabel += 'x';
-        if (pol[1] == 'A') chanLabel += trunkA;
-        else if (pol[1] == 'B') chanLabel += trunkB;
-        else if (pol[1] == 'C') chanLabel += trunkC;
-        else if (pol[1] == 'D') chanLabel += trunkD;
+        if (pol[1] == 'A') chanLabel += ltrim(trunkA);
+        else if (pol[1] == 'B') chanLabel += ltrim(trunkB);
+        else if (pol[1] == 'C') chanLabel += ltrim(trunkC);
+        else if (pol[1] == 'D') chanLabel += ltrim(trunkD);
     }
     return chanLabel;
 }

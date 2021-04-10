@@ -32,8 +32,8 @@ pt::ptime mjd2gregorian(double);
 string gregorian2string(pt::ptime);
 
 int main(int argc, char** argv){
-    if (argc < 2 || argc > 2){
-        cout << "Usage: " << argv[0] << " filename";
+    if (argc < 2 || !strcmp(argv[1],"-h")){
+        cout << "Usage: " << argv[0] << " filename...";
         cout << endl;
         return 0;
     }
@@ -59,7 +59,6 @@ int main(int argc, char** argv){
         dirName = lofasm::POLS[i];
         statcode = stat((rootDir+dirName).c_str(), &statbuf);
         if (statcode == -1){
-            //cout << "Creating directory: " << rootDir+dirName << endl;
             mkdir((rootDir+dirName).c_str(), S_IRWXU | S_IRWXG | S_IRWXO);
         }
     }

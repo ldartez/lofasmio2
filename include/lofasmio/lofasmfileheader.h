@@ -29,7 +29,6 @@ namespace lofasm{
 const unsigned int FHDR_ENTRY_LENGTH_BYTES = 8;
 const unsigned int FHDRV5_LENGTH_BYTES = 128;
 typedef char HDR_ENTRY[FHDR_ENTRY_LENGTH_BYTES+1];
-
 class Lofasm_FHDR {
  public:
     HDR_ENTRY sig,

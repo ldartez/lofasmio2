@@ -24,11 +24,10 @@ namespace lofasm{
         std::vector<std::vector<double>>* poldata;
 
         public:
+        Lofasm_FHDR hdr;
         LofasmStream(const char*); // constructor
         ~LofasmStream(); // destructor
-        //double** read(); // read entire file data
         std::vector<std::vector<double>> read(size_t); // read specified number of spectra
-        //void close(); // close file handles
     };
 }
 

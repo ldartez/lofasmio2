@@ -58,8 +58,7 @@ LofasmStream::LofasmStream(const char* fname){
 
     int rBytes = hdrLen - 3*FHDR_ENTRY_LENGTH_BYTES; // remaining bytes in file header
     gzread(file, hdr_buf+3*FHDR_ENTRY_LENGTH_BYTES, rBytes);
-    Lofasm_FHDR hdr(hdr_buf);
-    //hdr.print();
+    hdr = Lofasm_FHDR(hdr_buf);
     burst_buf = (char *) malloc(BURST_SIZE);
 }
 
@@ -78,4 +77,3 @@ std::vector<std::vector<double>> LofasmStream::read(size_t N){
     burst.parse(*poldata);
     return *poldata;
 }
-//double** LofasmStream::read(){}
